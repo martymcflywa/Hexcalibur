@@ -1,0 +1,40 @@
+{
+  "name": "hexcalibur",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Hexcalibur",
+  "main": "index.js",
+  "scripts": {
+    "test": "ts-node node_modules/jasmine/bin/jasmine",
+    "webpack": "webpack",
+    "webpack-dev-server": "webpack-dev-server --env.mode development --open",
+    "dev": "npm run webpack-dev-server",
+    "start": "npm run dev",
+    "build:dev": "npm run webpack -- --env.mode development",
+    "build:prod": "npm run webpack -- --env.mode production"
+  },
+  "author": "Martin Ponce",
+  "license": "BSD-2-Clause",
+  "devDependencies": {
+    "@types/jasmine": "^2.8.9",
+    "@types/node": "10.5.6",
+    "clean-webpack-plugin": "0.1.19",
+    "compression-webpack-plugin": "1.1.11",
+    "file-loader": "1.1.11",
+    "html-webpack-plugin": "^3.0.6",
+    "jasmine": "^3.2.0",
+    "source-map-loader": "0.2.3",
+    "ts-loader": "4.3.0",
+    "ts-node": "^7.0.1",
+    "tslint": "^5.11.0",
+    "typescript": "^2.7.2",
+    "uglifyjs-webpack-plugin": "1.2.5",
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.1",
+    "webpack-dev-server": "^3.1.9",
+    "webpack-merge": "4.1.2"
+  },
+  "dependencies": {
+    "excalibur": "0.18.0"
+  }
+}
