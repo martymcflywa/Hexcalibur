@@ -5,7 +5,7 @@
   "description": "Hexcalibur",
   "main": "index.js",
   "scripts": {
-    "test": "ts-node node_modules/jasmine/bin/jasmine",
+    "test": "jasmine-ts spec/**/*[Ss]pec.ts",
     "webpack": "webpack",
     "webpack-dev-server": "webpack-dev-server --env.mode development --open",
     "dev": "npm run webpack-dev-server",
@@ -23,6 +23,8 @@
     "file-loader": "1.1.11",
     "html-webpack-plugin": "^3.0.6",
     "jasmine": "^3.2.0",
+    "jasmine-spec-reporter": "^4.2.1",
+    "jasmine-ts": "^0.3.0",
     "source-map-loader": "0.2.3",
     "ts-loader": "4.3.0",
     "ts-node": "^7.0.1",
