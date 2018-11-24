@@ -16,27 +16,28 @@
   "author": "Martin Ponce",
   "license": "BSD-2-Clause",
   "devDependencies": {
-    "@types/jasmine": "^2.8.9",
-    "@types/node": "10.5.6",
-    "clean-webpack-plugin": "0.1.19",
-    "compression-webpack-plugin": "1.1.11",
-    "file-loader": "1.1.11",
+    "@types/jasmine": "^3.3.0",
+    "@types/node": "10.12.10",
+    "clean-webpack-plugin": "1.0.0",
+    "compression-webpack-plugin": "2.0.0",
+    "file-loader": "2.0.0",
+    "honeycomb-grid": "^1.4.1",
     "html-webpack-plugin": "^3.0.6",
     "jasmine": "^3.2.0",
     "jasmine-spec-reporter": "^4.2.1",
     "jasmine-ts": "^0.3.0",
-    "source-map-loader": "0.2.3",
-    "ts-loader": "4.3.0",
+    "source-map-loader": "0.2.4",
+    "ts-loader": "5.3.0",
     "ts-node": "^7.0.1",
     "tslint": "^5.11.0",
-    "typescript": "^2.7.2",
-    "uglifyjs-webpack-plugin": "1.2.5",
+    "typescript": "^3.1.6",
+    "uglifyjs-webpack-plugin": "2.0.1",
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.1",
     "webpack-dev-server": "^3.1.9",
-    "webpack-merge": "4.1.2"
+    "webpack-merge": "4.1.4"
   },
   "dependencies": {
-    "excalibur": "0.18.0"
+    "excalibur": "0.19.1"
   }
 }

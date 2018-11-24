@@ -1,7 +1,8 @@
-import * as ex from 'excalibur';
-import { LevelOne } from './scenes/level-one/level-one';
-import { Player } from './actors/player/player';
-import { Resources } from './resources';
+import * as ex from "excalibur";
+import { Resources } from "./resources";
+import { HexMap } from "./core/map/hex-map";
+import { HexGrid } from "./core/map/hex-grid";
+import { HexLevel } from "./scenes/hex-level";
 
 class Game extends ex.Engine {
   constructor() {
@@ -13,15 +14,13 @@ class Game extends ex.Engine {
   }
 }
 
+const hexGrid = new HexGrid(50, "flat", 10, 10);
+const hexMap = new HexMap(hexGrid);
+const hexLevel = new HexLevel();
 const game = new Game();
-const levelOne = new LevelOne();
-const player = new Player();
-player.addDrawing(Resources.Sword);
 
-levelOne.add(player);
-
-game.add('levelOne', levelOne);
-
+hexLevel.add(hexMap);
+game.add("hexLevel", hexLevel);
 
 let loader = new ex.Loader();
 for (let key in Resources) {
@@ -29,5 +28,5 @@ for (let key in Resources) {
 }
 
 game.start(loader).then(() => {
-  game.goToScene('levelOne');
+  game.goToScene("hexLevel");
 });
