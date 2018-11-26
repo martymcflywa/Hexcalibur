@@ -38,6 +38,7 @@
     "webpack-merge": "4.1.4"
   },
   "dependencies": {
-    "excalibur": "0.19.1"
+    "excalibur": "0.19.1",
+    "tstl": "^2.0.13"
   }
 }
