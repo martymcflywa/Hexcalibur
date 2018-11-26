@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "excalibur": "0.19.1",
-    "tstl": "^2.0.13"
+    "tstl": "^2.0.13",
+    "typescript-logging": "^0.6.3"
   }
 }
