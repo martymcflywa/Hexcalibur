@@ -1,8 +1,8 @@
 import * as ex from "excalibur";
-import { Resources } from "./resources";
-import { HexMap } from "./core/map/hex-map";
 import { HexGrid } from "./core/map/hex-grid";
 import { HexLevel } from "./scenes/hex-level";
+import { HexMap } from "./core/map/hex-map";
+import { Resources } from "./resources";
 
 class Game extends ex.Engine {
   constructor() {
@@ -29,4 +29,9 @@ for (let key in Resources) {
 
 game.start(loader).then(() => {
   game.goToScene("hexLevel");
+});
+
+game.input.pointers.primary.on("down", (e: ex.Input.PointerEvent) => {
+  if (!game.scenes["hexLevel"].isCurrentScene()) return;
+  hexMap.onSelectHex(e.pos.x, e.pos.y);
 });
