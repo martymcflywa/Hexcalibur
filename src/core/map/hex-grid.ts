@@ -1,22 +1,17 @@
-import * as honeycomb from "honeycomb-grid";
-import * as std from "tstl";
+import * as Honeycomb from "honeycomb-grid";
 import * as Log from "../log/log-config";
-import { HashMap } from "tstl";
-import { HexProperties } from "./hex-properties";
-import { HexUpdate } from "./hex-update";
+import { HexBase } from "./hex-base";
 import { UnsupportedOrientationError } from "../exceptions/unsupported-orientation-error";
 
 /**
  * Represents a hex grid, wraps honeycomb library.
  */
 export class HexGrid {
-  private readonly _size: number;
   private readonly _orientation: string;
   private readonly _cols: number;
   private readonly _rows: number;
-  private readonly _gridFactory: honeycomb.GridFactory<honeycomb.BaseHex<{}>>;
-  private _grid: honeycomb.Grid;
-  private _hexProperties: std.HashMap<string, HexProperties>;
+  private readonly _gridFactory: Honeycomb.GridFactory<Honeycomb.Hex<HexBase>>;
+  private _grid: Honeycomb.Grid<Honeycomb.Hex<HexBase>>;
   private _shouldDrawGrid: boolean;
   private _shouldDrawCartesian: boolean;
 
@@ -40,16 +35,14 @@ export class HexGrid {
     if (cols < 2 || rows < 2)
       throw new RangeError("HexGrid cols and rows must be greater than one");
 
-    this._size = size;
     this._orientation = orientation;
     this._cols = cols;
     this._rows = rows;
-    let hexFactory = honeycomb.extendHex({ size, orientation });
-    this._gridFactory = honeycomb.defineGrid(hexFactory);
+    let hexFactory = Honeycomb.extendHex(new HexBase(size, orientation, false));
+    this._gridFactory = Honeycomb.defineGrid(hexFactory);
     this._grid = this._gridFactory.rectangle({ width: cols, height: rows });
     this._shouldDrawGrid = shouldDrawGrid || true;
     this._shouldDrawCartesian = shouldDrawCartesian || true;
-    this.initHexProperties(this._grid);
   }
 
   /**
@@ -117,7 +110,7 @@ export class HexGrid {
   /**
    * Get honeycomb grid.
    */
-  public grid(): honeycomb.Grid {
+  public grid(): Honeycomb.Grid<Honeycomb.Hex<HexBase>> {
     return this._grid;
   }
 
@@ -152,81 +145,37 @@ export class HexGrid {
   }
 
   /**
-   * Initializes lookup map for hex properties.
-   * @param grid Use cartesian for each hex as key.
-   */
-  private initHexProperties(grid: honeycomb.Grid) {
-    this._hexProperties = new HashMap();
-    grid.forEach(hex => {
-      const key = this.hexToKey(hex);
-      this._hexProperties.insert(new std.Pair(key, { isSelected: false }));
-    });
-  }
-
-  /**
    * Handle on selection of a hex. If the hex is currently selected,
-   * will set isSelected to false, else true. Returns true if successfully
-   * updated status, else returns false.
+   * will set isSelected to false, else true. Returns the hex if selected,
+   * else returns null.
    * @param x The x pixel coordinate.
    * @param y The y pixel coordinate.
-   * @returns True if successfully updated isSelected, else returns false.
+   * @returns The hex if selectable
    */
-  public onSelectHex(x: number, y: number): HexUpdate {
+  public onSelectHex(x: number, y: number): Honeycomb.Hex<HexBase> {
     const hex = this.pointToHex(x, y);
-    if (!hex) return { hex: null, isUpdated: false };
-    let properties = this.getProperties(hex);
-    if (!properties) return { hex: hex, isUpdated: false };
-    properties.isSelected = !properties.isSelected;
-    this.setProperties(hex, properties);
-    return { hex: hex, isUpdated: true };
+    if (!hex) return null;
+    hex.isSelected = !hex.isSelected;
+    return hex;
   }
 
   /**
-   * Convert pixel coordinates to a hex in the grid.
+   * Convert pixel coordinates to a hex in the grid. Returns the hex if
+   * converted from pixel coordinates, else returns null.
+   * @returns The hex if converted from pixel coordinates, else returns null.
    */
-  private pointToHex(x: number, y: number): honeycomb.BaseHex<{}> {
-    let hex = this._gridFactory.pointToHex({ x: x, y: y });
+  private pointToHex(x: number, y: number): Honeycomb.Hex<HexBase> {
+    let key = this._gridFactory.pointToHex(x, y);
+    let hex = this._grid.get(key);
     if (!hex) {
       Log.HexGrid.debug(() => `Hex not found at px(${x},${y})`);
-      return;
+      return null;
     }
     let coordinates = hex.cartesian();
     Log.HexGrid.debug(
       () => `Converted px(${x},${y}) to hex(${coordinates.x},${coordinates.y})`
     );
     return hex;
-  }
-
-  /**
-   * Retrieve the properties of a hex, use cartesian to lookup.
-   * @param hex The hex to lookup.
-   * @returns the properties of a hex, if found, else null.
-   */
-  public getProperties(hex: honeycomb.BaseHex<{}>): HexProperties {
-    const key = this.hexToKey(hex);
-    if (!this._hexProperties.has(key)) {
-      Log.HexGrid.debug(() => `Properties for hex(${key}) not found`);
-      return;
-    }
-    return this._hexProperties.get(key);
-  }
-
-  /**
-   * Set the properties of a hex.
-   * @param hex
-   * @param value
-   */
-  private setProperties(hex: honeycomb.BaseHex<{}>, value: HexProperties) {
-    const key = this.hexToKey(hex);
-    this._hexProperties.set(key, value);
-  }
-
-  /**
-   * Convert a hex to its string key.
-   * @param hex
-   */
-  private hexToKey(hex: honeycomb.BaseHex<{}>): string {
-    return `${hex.cartesian().x},${hex.cartesian().y}`;
   }
 
   /**
