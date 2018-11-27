@@ -1,17 +1,17 @@
-import * as ex from "excalibur";
-import * as honeycomb from "honeycomb-grid";
-import * as std from "tstl";
+import * as Ex from "excalibur";
+import * as Honeycomb from "honeycomb-grid";
+import { HexBase } from "./hex-base";
 import { HexGrid } from "./hex-grid";
 
 /**
  * Extends TileMap to include convenience functionality for hex tile maps.
  */
-export class HexMap extends ex.TileMap {
+export class HexMap extends Ex.TileMap {
   private readonly _hexGrid: HexGrid;
-  private readonly _strokeColor = ex.Color.Black;
+  private readonly _strokeColor = Ex.Color.Black;
   private readonly _strokeWidth = 0.5;
-  private readonly _highlightColor = new ex.Color(50, 50, 50, 0.5);
-  private readonly _noHighlightColor = new ex.Color(0, 0, 0, 0);
+  private readonly _highlightColor = new Ex.Color(50, 50, 50, 0.5);
+  private readonly _noHighlightColor = new Ex.Color(0, 0, 0, 0);
 
   /**
    * Construct a hex tilemap, based on data from the hex grid.
@@ -53,7 +53,7 @@ export class HexMap extends ex.TileMap {
    */
   private hexPath(
     ctx: CanvasRenderingContext2D,
-    corners: honeycomb.PointLike[]
+    corners: Honeycomb.PointLike[]
   ) {
     const [firstCorner, ...otherCorners] = corners;
     ctx.moveTo(firstCorner.x, firstCorner.y);
@@ -87,18 +87,18 @@ export class HexMap extends ex.TileMap {
   private drawCartesian<T>(
     ctx: CanvasRenderingContext2D,
     delta: number,
-    hex: honeycomb.BaseHex<T>
+    hex: Honeycomb.BaseHex<T>
   ) {
     if (!this._hexGrid.shouldDrawCartesian()) return;
 
     let point = hex.toPoint();
     let center = hex.center().add(point);
-    let label = new ex.Label(
+    let label = new Ex.Label(
       `${hex.cartesian().x},${hex.cartesian().y}`,
       center.x,
       center.y - hex.size / 2
     );
-    label.textAlign = ex.TextAlign.Center;
+    label.textAlign = Ex.TextAlign.Center;
     label.fontSize = 16;
     label.draw(ctx, delta);
   }
@@ -110,10 +110,9 @@ export class HexMap extends ex.TileMap {
    */
   private fillHighlight(
     ctx: CanvasRenderingContext2D,
-    hex: honeycomb.BaseHex<{}>
+    hex: Honeycomb.Hex<HexBase>
   ) {
-    const hexProperty = this._hexGrid.getProperties(hex);
-    const fillStyle = hexProperty.isSelected
+    const fillStyle = hex.isSelected
       ? this._highlightColor
       : this._noHighlightColor;
     ctx.fillStyle = fillStyle.toRGBA();

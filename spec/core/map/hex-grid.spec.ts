@@ -50,19 +50,13 @@ describe("HexGrid", () => {
     let hexGrid = new HexGrid(10, "flat", 2, 2);
     it("does exist", () => {
       let actual = hexGrid.onSelectHex(8, 11);
-      let cartesian = actual.hex.cartesian();
-      let isUpdated = actual.isUpdated;
-      expect(cartesian.x).toBe(0);
-      expect(cartesian.y).toBe(0);
-      expect(isUpdated).toBe(true);
+      expect(actual.cartesian().x).toBe(0);
+      expect(actual.cartesian().y).toBe(0);
+      expect(actual.isSelected).toBeTruthy;
     });
     it("not exist", () => {
       let actual = hexGrid.onSelectHex(0, 0);
-      let cartesian = actual.hex.cartesian();
-      let isUpdated = actual.isUpdated;
-      expect(cartesian.x).toBe(-1);
-      expect(cartesian.y).toBe(-1);
-      expect(isUpdated).toBeFalsy();
+      expect(actual).toBeNull();
     });
   });
 });
