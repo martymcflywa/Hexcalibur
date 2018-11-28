@@ -1,3 +1,5 @@
+import * as Honeycomb from "honeycomb-grid";
+import { HexBase } from "../../../src/core/map/hex-base";
 import { HexGrid } from "../../../src/core/map/hex-grid";
 
 describe("HexGrid", () => {
@@ -9,7 +11,7 @@ describe("HexGrid", () => {
     });
   });
   describe("flat", () => {
-    let hexGrid = new HexGrid(1, "flat", 2, 2);
+    const hexGrid = new HexGrid(1, "flat", 2, 2);
     describe("hex calculations", () => {
       it("width", () => {
         expect(hexGrid.hexWidth()).toBe(2);
@@ -28,7 +30,7 @@ describe("HexGrid", () => {
     });
   });
   describe("pointy", () => {
-    let hexGrid = new HexGrid(1, "pointy", 2, 2);
+    const hexGrid = new HexGrid(1, "pointy", 2, 2);
     describe("hex calculations", () => {
       it("width", () => {
         expect(hexGrid.hexWidth()).toBe(1.7320508075688772);
@@ -47,16 +49,29 @@ describe("HexGrid", () => {
     });
   });
   describe("on select hex", () => {
-    let hexGrid = new HexGrid(10, "flat", 2, 2);
+    const hexGrid = new HexGrid(10, "flat", 5, 5);
     it("does exist", () => {
-      let actual = hexGrid.onSelectHex(8, 11);
+      const actual = hexGrid.onSelectHex(8, 11);
       expect(actual.cartesian().x).toBe(0);
       expect(actual.cartesian().y).toBe(0);
-      expect(actual.isSelected).toBeTruthy;
+      expect(actual.isHighlighted).toBeTruthy;
     });
     it("not exist", () => {
-      let actual = hexGrid.onSelectHex(0, 0);
+      const actual = hexGrid.onSelectHex(0, 0);
       expect(actual).toBeNull();
+    });
+    describe("range of 2", () => {
+      it("returns hexes within range", () => {
+        const hex = hexGrid.onSelectHex(43, 43);
+        const actual = hexGrid.getRange(hex, 2);
+        const grid = Honeycomb.defineGrid(
+          Honeycomb.extendHex(
+            new HexBase(hex.size, hex.orientation, hex.isHighlighted)
+          )
+        );
+        const expected = grid.hexagon({ radius: 2, center: { x: 2, y: 2 } });
+        expect(actual).toEqual(expected);
+      });
     });
   });
 });

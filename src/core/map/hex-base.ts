@@ -4,15 +4,15 @@
 export class HexBase {
   public size: number;
   public orientation: "flat" | "pointy";
-  public isSelected: boolean;
+  public isHighlighted: boolean;
 
   constructor(
     size: number,
     orientation: "flat" | "pointy",
-    isSelected: boolean
+    isHighlighted: boolean
   ) {
     this.size = size;
     this.orientation = orientation;
-    this.isSelected = isSelected;
+    this.isHighlighted = isHighlighted;
   }
 }

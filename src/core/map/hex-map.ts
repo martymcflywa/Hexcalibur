@@ -10,7 +10,7 @@ export class HexMap extends Ex.TileMap {
   private readonly _hexGrid: HexGrid;
   private readonly _strokeColor = Ex.Color.Black;
   private readonly _strokeWidth = 0.5;
-  private readonly _highlightColor = new Ex.Color(50, 50, 50, 0.5);
+  private readonly _highlightColor = new Ex.Color(255, 255, 255, 0.2);
   private readonly _noHighlightColor = new Ex.Color(0, 0, 0, 0);
 
   /**
@@ -40,10 +40,11 @@ export class HexMap extends Ex.TileMap {
       let point = hex.toPoint();
       let corners = hex.corners().map(corner => corner.add(point));
       this.hexPath(ctx, corners);
+      this.clearHighlight(ctx);
       this.drawHex(ctx);
       this.drawCartesian(ctx, delta, hex);
-      this.fillHighlight(ctx, hex);
     });
+    this.fillHighlight(ctx);
   }
 
   /**
@@ -104,20 +105,30 @@ export class HexMap extends Ex.TileMap {
   }
 
   /**
-   * Fills/unfills highlights for selected/unselected hex.
+   * Clears highlights from the map.
+   * @param ctx
+   */
+  private clearHighlight(ctx: CanvasRenderingContext2D) {
+    ctx.fillStyle = this._noHighlightColor.toRGBA();
+    ctx.fill();
+    ctx.save();
+  }
+
+  /**
+   * Fills highlights for selected hex.
    * @param ctx
    * @param hex
    */
-  private fillHighlight(
-    ctx: CanvasRenderingContext2D,
-    hex: Honeycomb.Hex<HexBase>
-  ) {
-    const fillStyle = hex.isSelected
-      ? this._highlightColor
-      : this._noHighlightColor;
-    ctx.fillStyle = fillStyle.toRGBA();
-    ctx.fill();
-    ctx.save();
+  private fillHighlight(ctx: CanvasRenderingContext2D) {
+    ctx.fillStyle = this._highlightColor.toRGBA();
+    if (this._hexGrid.hexesToHighlight() == null) return;
+    this._hexGrid.hexesToHighlight().forEach(hex => {
+      let point = hex.toPoint();
+      let corners = hex.corners().map(corner => corner.add(point));
+      this.hexPath(ctx, corners);
+      ctx.fill();
+      ctx.save();
+    });
   }
 
   /**
