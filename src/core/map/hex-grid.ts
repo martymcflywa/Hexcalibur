@@ -12,6 +12,7 @@ export class HexGrid {
   private readonly _rows: number;
   private readonly _gridFactory: Honeycomb.GridFactory<Honeycomb.Hex<HexBase>>;
   private _grid: Honeycomb.Grid<Honeycomb.Hex<HexBase>>;
+  private _hexesToHighlight: Honeycomb.Hex<HexBase>[];
   private _shouldDrawGrid: boolean;
   private _shouldDrawCartesian: boolean;
 
@@ -145,18 +146,34 @@ export class HexGrid {
   }
 
   /**
-   * Handle on selection of a hex. If the hex is currently selected,
-   * will set isSelected to false, else true. Returns the hex if selected,
-   * else returns null.
+   * If hex exists in grid, returns selected hex from pixel coordinates, else
+   * returns null.
    * @param x The x pixel coordinate.
    * @param y The y pixel coordinate.
-   * @returns The hex if selectable
+   * @returns The hex if selectable.
    */
   public onSelectHex(x: number, y: number): Honeycomb.Hex<HexBase> {
     const hex = this.pointToHex(x, y);
     if (!hex) return null;
-    hex.isSelected = !hex.isSelected;
+    this._hexesToHighlight = this.getRange(hex, 2);
     return hex;
+  }
+
+  /**
+   * Returns hexes within range of selected center hex
+   * @param hex
+   * @param range
+   */
+  public getRange(hex: Honeycomb.Hex<HexBase>, range: number) {
+    if (!hex) return null;
+    return this._grid.hexesInRange(hex, range, true);
+  }
+
+  /**
+   * Retrieve the array of hexes to highlight.
+   */
+  public hexesToHighlight(): Honeycomb.Hex<HexBase>[] {
+    return this._hexesToHighlight;
   }
 
   /**
