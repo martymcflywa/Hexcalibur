@@ -1,6 +1,5 @@
 import * as Ex from "excalibur";
 import * as Honeycomb from "honeycomb-grid";
-import { HexBase } from "./hex-base";
 import { HexGrid } from "./hex-grid";
 
 /**
@@ -36,15 +35,16 @@ export class HexMap extends Ex.TileMap {
    */
   public draw(ctx: CanvasRenderingContext2D, delta: number) {
     super.draw(ctx, delta);
+    this.clearStroke(ctx);
+    this.clearFill(ctx);
     this._hexGrid.grid().forEach(hex => {
       let point = hex.toPoint();
       let corners = hex.corners().map(corner => corner.add(point));
       this.hexPath(ctx, corners);
-      this.clearHighlight(ctx);
       this.drawHex(ctx);
       this.drawCartesian(ctx, delta, hex);
     });
-    this.fillHighlight(ctx);
+    this.fillHex(ctx);
   }
 
   /**
@@ -105,21 +105,31 @@ export class HexMap extends Ex.TileMap {
   }
 
   /**
-   * Clears highlights from the map.
+   * Clears any stroke drawn on the map.
    * @param ctx
    */
-  private clearHighlight(ctx: CanvasRenderingContext2D) {
+  private clearStroke(ctx: CanvasRenderingContext2D) {
+    ctx.strokeStyle = this._noHighlightColor.toRGBA();
+    ctx.stroke();
+    ctx.save();
+  }
+
+  /**
+   * Clears any fill drawn on the map.
+   * @param ctx
+   */
+  private clearFill(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = this._noHighlightColor.toRGBA();
     ctx.fill();
     ctx.save();
   }
 
   /**
-   * Fills highlights for selected hex.
+   * Fills the hex with color.
    * @param ctx
    * @param hex
    */
-  private fillHighlight(ctx: CanvasRenderingContext2D) {
+  private fillHex(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = this._highlightColor.toRGBA();
     if (this._hexGrid.hexesToHighlight() == null) return;
     this._hexGrid.hexesToHighlight().forEach(hex => {
